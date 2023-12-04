@@ -1,4 +1,4 @@
-# Beastly-Battlegrounds
+# Beastly Battlegrounds
 <img src="https://raw.githubusercontent.com/Mickkers/Mickkers/main/Beastly%20Battlegrounds.gif" height='250'/>
 
 A top-down RTS game made using unity.
