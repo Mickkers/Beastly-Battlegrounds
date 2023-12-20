@@ -21,6 +21,10 @@ public class Enemy : MonoBehaviour
     [Header("UI")]
     [SerializeField] private RectTransform healthCanvas;
     [SerializeField] private Image healthBar;
+    [Header("Sounds")]
+    [SerializeField] private AudioSource attackSound;
+    [SerializeField] private AudioSource hitSound;
+    [SerializeField] private AudioSource deathSound;
 
     private float nextAttackTime;
     private float attackInterval;
@@ -51,11 +55,12 @@ public class Enemy : MonoBehaviour
         UpdateHealth();
     }
 
+
     private void AttackPlayer()
     {
         if (player != null && canAttack)
         {
-            if (Vector3.Distance(transform.position, player.transform.position) < GetAttackRange() && Time.time > nextAttackTime && navMeshAgent.velocity.magnitude < 0.1f)
+            if (Vector3.Distance(transform.position, player.transform.position) < GetAttackRange() && Time.time > nextAttackTime)
             {
                 StartCoroutine(Attack());
             }
@@ -66,6 +71,7 @@ public class Enemy : MonoBehaviour
     {
         canAttack = false;
         animator.SetBool(AnimationStrings.basicAttack, true);
+        navMeshAgent.isStopped = true;
 
         yield return new WaitForSeconds(attackInterval);
 
@@ -81,8 +87,10 @@ public class Enemy : MonoBehaviour
         float damage = GetDamage();
         if (Vector3.Distance(transform.position, player.transform.position) < GetAttackRange())
         {
+            attackSound.Play();
             player.GetComponent<PlayerHealth>().TakeDamage(damage);
         }
+        navMeshAgent.isStopped = false;
     }
 
     private void AttackEnd()
@@ -119,6 +127,7 @@ public class Enemy : MonoBehaviour
 
     private void Death()
     {
+        deathSound.Play();
         healthCanvas.gameObject.SetActive(false);
         animator.SetTrigger(AnimationStrings.death);
         gameObject.tag = "DeadEnemy";
@@ -137,11 +146,14 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float value)
     {
+        hitSound.Play();
         currHealth -= value;
     }
 
     private void DisableOutlineOnStart()
     {
-        GetComponent<Outline>().enabled = false;
+        Outline outline = GetComponent<Outline>();
+        outline.OutlineColor = new Color(1f, 0f, 0f);
+        outline.enabled = false;
     }
 }

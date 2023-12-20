@@ -5,25 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class MutantSkill : MonoBehaviour
+public class MutantSkill : Skill
 {
-    private Animator animator;
     private PlayerHealth playerHealth;
 
-    [Header("Skill Attributes")]
-    [SerializeField] private float skillCooldown;
-    [SerializeField] private float skillCost;
-    [SerializeField] private float skillDuration;
     public float skillDamageIncrease;
     [SerializeField] private float skillHealthDrain;
     [SerializeField] private ParticleSystem buff;
-
-    [Header("UI Eements")]
-    [SerializeField] private Image skillIcon;
-    [SerializeField] private TextMeshProUGUI skillText;
-
-    [HideInInspector] public bool isSkillAvailable;
-    [HideInInspector] public bool isSkillActive;
 
     private float currDuration;
     private float currCooldown;
@@ -31,8 +19,8 @@ public class MutantSkill : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
         playerHealth = GetComponent<PlayerHealth>();
+        animator = GetComponent<Animator>();
         isSkillActive = false;
         isSkillAvailable = true;
     }
@@ -44,7 +32,7 @@ public class MutantSkill : MonoBehaviour
         SkillCooldown();
     }
 
-    public void Skill()
+    public override void SkillAction()
     {
         isSkillActive = true;
         isSkillAvailable = false;
@@ -54,7 +42,7 @@ public class MutantSkill : MonoBehaviour
         currCooldown = skillCooldown;
     }
 
-    private void SkillDuration()
+    protected override void SkillDuration()
     {
         if (!isSkillActive)
         {
@@ -74,7 +62,7 @@ public class MutantSkill : MonoBehaviour
         }
     }
 
-    private void SkillCooldown()
+    protected override void SkillCooldown()
     {
         if (isSkillActive || isSkillAvailable)
         {
@@ -94,16 +82,5 @@ public class MutantSkill : MonoBehaviour
             currCooldown = 0f;
         }
         
-    }
-
-    private void UpdateSkillUI(float cooldown)
-    {
-        skillIcon.fillAmount = 1f - cooldown / skillCooldown;
-        skillText.text = "" + (int)cooldown;
-    }
-
-    public float GetManaCost()
-    {
-        return skillCost;
     }
 }

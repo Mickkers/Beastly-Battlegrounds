@@ -23,6 +23,9 @@ public abstract class PlayerAction : MonoBehaviour
 
     [HideInInspector] public Animator animator;
     [HideInInspector] public PlayerMovement playerMovement;
+    [HideInInspector] public GameObject target;
+    [HideInInspector] public float nextAttackTime;
+    [HideInInspector] public float attackInterval;
 
     public void Initialization()
     {
@@ -30,6 +33,8 @@ public abstract class PlayerAction : MonoBehaviour
         animator = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
         currMana = maxMana;
+
+        attackInterval = attackCooldown / (240 + attackCooldown) * 0.01f;
     }
 
     public bool HasMana(float value)
@@ -46,17 +51,47 @@ public abstract class PlayerAction : MonoBehaviour
         manaBarChar.fillAmount = currMana / maxMana;
     }
 
-    public abstract void BasicAttack();
+    public void BasicAttack()
+    {
+        target = playerMovement.target;
+
+        if (target != null && canBasicAttack)
+        {
+            if (Vector3.Distance(transform.position, target.transform.position) <= GetAttackRange() && Time.time > nextAttackTime)
+            {
+                StartCoroutine(Attack());
+            }
+        }
+    }
+
+    private IEnumerator Attack()
+    {
+        canBasicAttack = false;
+        animator.SetBool(AnimationStrings.basicAttack, true);
+
+        yield return new WaitForSeconds(attackInterval);
+
+        if (target == null || target.CompareTag("DeadEnemy"))
+        {
+            canBasicAttack = true;
+            animator.SetBool(AnimationStrings.basicAttack, false);
+        }
+    }
     public abstract void Skill();
     public abstract void Ultimate();
 
     public float GetAttackRange()
     {
-        return attackRange / transform.localScale.x;
+        return attackRange;
     }
 
     public float GetDamage()
     {
         return Mathf.Lerp(damageMin, damageMax, Random.Range(0f, 1f));
+    }
+
+    public void ManaToFull()
+    {
+        currMana = maxMana;
     }
 }

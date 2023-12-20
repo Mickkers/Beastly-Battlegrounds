@@ -10,13 +10,17 @@ public class EnemyMovement : MonoBehaviour
     private Animator animator;
     private Enemy enemy;
     private PlayerMovement player;
+    private GameManager gameManager;
+    private GameplayUI gameplayUI;
 
     [SerializeField] private float rotateSpeed;
     [SerializeField] private float motionSmoothTime;
     private float rotateVelocity;
 
     [SerializeField] private float chaseRange;
+    [SerializeField] private AudioSource idleSound;
     private float attackRange;
+    private bool asigned;
 
     // Start is called before the first frame update
     void Start()
@@ -25,15 +29,43 @@ public class EnemyMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         enemy = GetComponent<Enemy>();
         attackRange = enemy.GetAttackRange();
-        player = FindObjectOfType(typeof(PlayerMovement)) as PlayerMovement;
+        asigned = false;
+        gameManager = FindObjectOfType(typeof(GameManager)) as GameManager;
+        gameplayUI = FindObjectOfType(typeof(GameplayUI)) as GameplayUI;
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!asigned)
+        {
+            player = FindObjectOfType(typeof(PlayerMovement)) as PlayerMovement;
+            if (player is null) return;
+            asigned = true;
+        }
         if (!enemy.isAlive) enabled = false;
+
+        Sound();
         CheckPlayerDistance();
         Animate();
+    }
+
+    private void Sound()
+    {
+        if (navMeshAgent.velocity.magnitude / navMeshAgent.speed < 0.05f)
+        {
+            idleSound.mute = false;
+        }
+        else
+        {
+            idleSound.mute = true;
+        }
+
+        if (gameManager.isGameover || gameplayUI.isPaused)
+        {
+            idleSound.mute = true;
+        }
     }
 
     private void Animate()

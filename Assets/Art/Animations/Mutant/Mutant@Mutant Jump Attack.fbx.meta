@@ -58,7 +58,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.4586207
-        functionName: UltimateAction
+        functionName: UltimateHit
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 61fe8f0cd6f415444a10ea40b1132317, type: 3}
         floatParameter: 0

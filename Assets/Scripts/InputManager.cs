@@ -7,10 +7,13 @@ public class InputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
     public PlayerInput.GameplayActions gameplay;
+    private CharSelect cSelect;
 
     private PlayerMovement playerMovement;
     private PlayerAction playerAction;
     private CamManager camManager;
+
+    private MjlSkill mjlSkill;
 
     // Start is called before the first frame update
     void Awake()
@@ -20,11 +23,17 @@ public class InputManager : MonoBehaviour
         gameplay = playerInput.Gameplay;
         playerMovement = GetComponent<PlayerMovement>();
         playerAction = GetComponent<PlayerAction>();
+        cSelect = FindObjectOfType(typeof(CharSelect)) as CharSelect;
 
         gameplay.CameraLock.performed += ctx => camManager.CameraLock();
         gameplay.BasicAttack.performed += ctx => playerMovement.MoveToEnemy(Mouse.current.position.ReadValue());
         gameplay.Ultimate.performed += ctx => playerAction.Ultimate();
         gameplay.Skill.performed += ctx => playerAction.Skill();
+        if(cSelect.charSelection == EnumCharType.Ranged)
+        {
+            mjlSkill = GetComponent<MjlSkill>();
+            gameplay.BasicAttack.performed += ctx => mjlSkill.SkillAction();
+        }
     }
 
     private void OnEnable()

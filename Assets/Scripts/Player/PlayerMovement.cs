@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float rotateSpeed;
     [SerializeField] private float motionSmoothTime;
+    [SerializeField] private AudioSource walkSound;
     private float rotateVelocity;
     private float attackRange;
 
@@ -32,7 +33,20 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Animate();
+        Sound();
         CheckTargetDistance();
+    }
+
+    private void Sound()
+    {
+        if(navMeshAgent.velocity.magnitude / navMeshAgent.speed > 0.2f)
+        {
+            walkSound.mute = false;
+        }
+        else
+        {
+            walkSound.mute = true;
+        }
     }
 
     private void CheckTargetDistance()

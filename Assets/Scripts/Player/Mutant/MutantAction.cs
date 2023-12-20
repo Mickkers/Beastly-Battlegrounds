@@ -6,10 +6,9 @@ public class MutantAction : PlayerAction
 {
     private MutantSkill mSkill;
     private MutantUltimate mUltimate;
-    private GameObject target;
 
-    private float nextAttackTime;
-    private float attackInterval;
+    [SerializeField] private AudioSource basicAttackSound;
+    [SerializeField] private AudioSource skillAttackSound;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +16,6 @@ public class MutantAction : PlayerAction
         Initialization();
         mSkill = GetComponent<MutantSkill>();
         mUltimate = GetComponent<MutantUltimate>();
-        attackInterval = attackCooldown / (240 + attackCooldown) * 0.01f;
     }
 
     // Update is called once per frame
@@ -26,37 +24,21 @@ public class MutantAction : PlayerAction
         UpdateMana();
         BasicAttack();
     }
-    public override void BasicAttack()
-    {
-        target = playerMovement.target;
 
-        if(target != null && canBasicAttack)
-        {
-            if(Vector3.Distance(transform.position, target.transform.position) <= GetAttackRange() && Time.time > nextAttackTime)
-            {
-                StartCoroutine(Attack());
-            }
-        }
-    }
-
-    private IEnumerator Attack()
-    {
-        canBasicAttack = false;
-        animator.SetBool(AnimationStrings.basicAttack, true);
-
-        yield return new WaitForSeconds(attackInterval);
-
-        if(target == null || target.CompareTag("DeadEnemy"))
-        {
-            canBasicAttack = true;
-            animator.SetBool(AnimationStrings.basicAttack, false);
-        }
-    }
 
     private void BasicAttackHit()
     {
         float damage = GetDamage();
-        if (mSkill.isSkillActive) damage *= (1 + mSkill.skillDamageIncrease);
+
+        if (mSkill.isSkillActive)
+        {
+            damage *= (1 + mSkill.skillDamageIncrease);
+            skillAttackSound.Play();
+        }
+        else
+        {
+            basicAttackSound.Play();
+        }
         if (target == null) return;
         target.GetComponent<Enemy>().TakeDamage(damage);
     }
@@ -73,7 +55,7 @@ public class MutantAction : PlayerAction
         if (mSkill.isSkillAvailable && HasMana(mSkill.GetManaCost()))
         {
             currMana -= mSkill.GetManaCost();
-            mSkill.Skill();
+            mSkill.SkillAction();
         }
     }
 
@@ -82,7 +64,7 @@ public class MutantAction : PlayerAction
         if (mUltimate.isUltimateAvailable && HasMana(mUltimate.GetManaCost()))
         {
             currMana -= mUltimate.GetManaCost();
-            mUltimate.Ultimate();
+            mUltimate.UltimateAction();
         }
     }
 }

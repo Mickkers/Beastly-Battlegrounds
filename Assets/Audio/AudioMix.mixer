@@ -14,6 +14,39 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-6285754381993205889
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 21c9ba0b3a146d94ca67d006cd0a70d5
+  m_EffectName: Attenuation
+  m_MixLevel: febe27a08365dc94ba884221c05acc3d
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &-5062549576916076855
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grunt
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 1b83b47fbbb424748bef7e3be8dfb9b0
+  m_Children: []
+  m_Volume: db42f4e469fe83f47858b8cce42d8a05
+  m_Pitch: 57e6227c47071cc42a6ac5719910ae76
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -6285754381993205889}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!244 &-2718934889468609396
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -56,7 +89,8 @@ AudioMixerGroupController:
   m_Name: SFX
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 5b800f4f33c4b8d48bbcf216b66b46b7
-  m_Children: []
+  m_Children:
+  - {fileID: -5062549576916076855}
   m_Volume: 5285a108dda450d43a38a9bb3cf7c7c1
   m_Pitch: 7c6b1ecc68ed22842b16cd555d8fc08f
   m_Send: 00000000000000000000000000000000
@@ -91,6 +125,7 @@ AudioMixerController:
     - 635effeae9c5ea646b77664c5965e6e0
     - b67630d24d764f345a0d57c0c68b7983
     - 5b800f4f33c4b8d48bbcf216b66b46b7
+    - 1b83b47fbbb424748bef7e3be8dfb9b0
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -138,5 +173,9 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: e159bba46c2822d4b931dd6999a0df7d
-  m_FloatValues: {}
+  m_FloatValues:
+    ef26d0343626bfe4c9845f1e072ac518: -6
+    db42f4e469fe83f47858b8cce42d8a05: -30
+    5285a108dda450d43a38a9bb3cf7c7c1: -6
+    5a9654ed226054f4c83a086bcc4cde80: 0
   m_TransitionOverrides: {}

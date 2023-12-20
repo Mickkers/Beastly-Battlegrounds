@@ -4,24 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MutantUltimate : MonoBehaviour
+public class MutantUltimate : Ultimate
 {
-    private Animator animator;
-
-    [Header("Ultimate Attributes")]
-    [SerializeField] private float ultimateCooldown;
-    [SerializeField] private float ultimateCost;
-    [SerializeField] private float ultimateDamage;
-    [SerializeField] private float ultimateRange;
-    [SerializeField] private float ultimateDuration;
+    
     [SerializeField] private ParticleSystem effect;
-
-    [Header("UI Eements")]
-    [SerializeField] private Image ultimateIcon;
-    [SerializeField] private TextMeshProUGUI ultimateText;
-
-    public bool isUltimateAvailable;
-    private bool isUltimateActive;
+    [SerializeField] private AudioSource ultimateSound;
 
     private float currDuration;
     private float currCooldown;
@@ -41,7 +28,7 @@ public class MutantUltimate : MonoBehaviour
         UltimateCooldown();
     }
 
-    public void Ultimate()
+    public override void UltimateAction()
     {
         isUltimateActive = true;
         isUltimateAvailable = false;
@@ -51,12 +38,13 @@ public class MutantUltimate : MonoBehaviour
         currCooldown = ultimateCooldown;
     }
 
-    private void UltimateAction()
+    public void UltimateHit()
     {
         currDuration = ultimateDuration;
         effect.Play();
+        ultimateSound.Play();
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, ultimateRange);
-        float damage = GetComponent<MutantAction>().GetDamage();
+        float damage = GetComponent<PlayerAction>().GetDamage();
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Enemy"))
@@ -66,7 +54,7 @@ public class MutantUltimate : MonoBehaviour
         }
     }
 
-    private void UltimateDuration()
+    protected override void UltimateDuration()
     {
         if (!isUltimateActive)
         {
@@ -84,7 +72,7 @@ public class MutantUltimate : MonoBehaviour
         }
     }
 
-    private void UltimateCooldown()
+    protected override void UltimateCooldown()
     {
         if (isUltimateActive || isUltimateAvailable)
         {
@@ -104,16 +92,5 @@ public class MutantUltimate : MonoBehaviour
             currCooldown = 0f;
         }
 
-    }
-
-    private void UpdateUltUI(float cooldown)
-    {
-        ultimateIcon.fillAmount = 1f - cooldown / ultimateCooldown;
-        ultimateText.text = "" + (int)cooldown;
-    }
-
-    public float GetManaCost()
-    {
-        return ultimateCost;
     }
 }
